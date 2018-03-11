@@ -4,7 +4,9 @@
   "description": "A bot that will let people signup for a roll20 game on discord.",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && mkdir dist && cp src/index.html dist/index.html && tsc",
+    "start": "node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -15,11 +17,17 @@
   "author": "Frank McCready",
   "license": "MIT",
   "dependencies": {
+    "@types/express": "^4.11.1",
+    "@types/node": "^9.4.7",
     "btoa": "^1.1.2",
     "bufferutil": "^3.0.3",
+    "cookie-parser": "^1.4.3",
     "discord.js": "^11.3.2",
     "express": "^4.16.2",
     "express-jwt": "^5.3.1",
-    "node-fetch": "^2.1.1"
+    "node-fetch": "^2.1.1",
+    "react": "^16.2.0",
+    "rxjs": "^5.5.6",
+    "typescript": "^2.7.2"
   }
 }
