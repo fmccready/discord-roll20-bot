@@ -1,0 +1,25 @@
+{
+  "name": "discord-roll20-bot",
+  "version": "0.0.1",
+  "description": "A bot that will let people signup for a roll20 game on discord.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "roll20",
+    "discord",
+    "chatbot"
+  ],
+  "author": "Frank McCready",
+  "license": "MIT",
+  "dependencies": {
+    "btoa": "^1.1.2",
+    "bufferutil": "^3.0.3",
+    "discord.js": "^11.3.2",
+    "express": "^4.16.2",
+    "express-jwt": "^5.3.1",
+    "node-fetch": "^2.1.1"
+  }
+}
