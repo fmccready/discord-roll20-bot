@@ -57,8 +57,10 @@ client.on('message', msg => {
         msg.reply('pong')
     } else if (msg.content.toLowerCase() === 'signup') {
         signups.push(msg.author)
+        msg.reply(signups.toString())
     } else if (msg.content.toLowerCase() === 'cancel') {
         signups.splice(signups.indexOf(msg.author), 1)
+        msg.reply(signups.toString())
     }
 })
 
