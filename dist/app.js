@@ -50,14 +50,20 @@ client.on('ready', function () {
 });
 var signups = [];
 client.on('message', function (msg) {
-    if (msg.content === 'ping') {
+    if (msg.content.toLowerCase() === 'ping') {
         msg.reply('pong');
     }
     else if (msg.content.toLowerCase() === 'signup') {
+        msg.reply('signup request received');
         signups.push(msg.author);
+        msg.reply(signups.toString());
+        msg.reply('signup request complete');
     }
     else if (msg.content.toLowerCase() === 'cancel') {
+        msg.reply('cancel request received');
         signups.splice(signups.indexOf(msg.author), 1);
+        msg.reply(signups.toString());
+        msg.reply('cancel request complete');
     }
 });
 client.login(process.env.TOKEN);
