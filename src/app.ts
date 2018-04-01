@@ -53,7 +53,7 @@ client.on('ready', () => {
 var signups = [];
 
 client.on('message', msg => {
-    if (msg.content === 'ping') {
+    if (msg.content.toLowerCase() === 'ping') {
         msg.reply('pong')
     } else if (msg.content.toLowerCase() === 'signup') {
         msg.reply('signup request received')
