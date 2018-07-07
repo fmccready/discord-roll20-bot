@@ -7,10 +7,7 @@
         "sourceMap": true,
         "baseUrl": "./src/",
         "paths": {
-            "Api": ["api/index"],
-            "Bot": ["bot/index"],
-            "Frontend": ["frontend/index"],
-            "Utilities": ["utilities/index"]
+            "Bot": ["bot/index"]
         }
     },
     "include": [

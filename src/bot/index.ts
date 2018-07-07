@@ -1,34 +1,41 @@
-import { Command } from 'Bot/commands'
-import { getCommands } from 'Bot/commands/standard'
-import { Game } from 'Bot/games'
-import getGames from 'Bot/games/roll20'
+import { find, tap, propEq, defaultTo } from 'ramda'
+import { Client } from 'discord.js'
+import { Command, getCommands } from './command'
 
-var commandList = []
-var games = []
-getCommands().subscribe((command) => {
-    commandList.push(command)
-})
-getGames().subscribe((game)=>{
-    games.push(game)
+var commandList: Array<Command> = []
+
+getCommands().subscribe(commands => {
+  commandList = commands
 })
 
-
-export default function init(client): void{
-    client.on('message', msg => {
-        let msgContent = msg.content.toLowerCase()
-        let commands = commandList.filter((command) => {
-            if (command.name === msgContent){
-                return command
-            }
-        })
-
-        if (commands.length > 0){
-            commands.forEach((command) => {
-                command.action(msg)
-            })
-        } else {
-            msg.reply(`Next game is at ${games[0].time}. Say "signup" to RSVP to the game. Say "cancel" to remove yourself. Say "players" to see who is playing.`)
-        }
+function defaultReply() {
+  let reply = `Next game is at .\n`
+  reply += commandList
+    .map(command => {
+      return command.instruction
     })
+    .join('\n')
+  return reply
 }
 
+export function findCommand(command: string, argument?: any): () => string {
+  var nameEqualsCommand = propEq('name', command)
+  var foundCommandInList = find(nameEqualsCommand, commandList)
+  if (foundCommandInList) {
+    return foundCommandInList.action
+  } else {
+    return defaultReply
+  }
+}
+
+export default function init(client: Client) {
+  client.on('message', msg => {
+    let msgContent = msg.content.toLowerCase()
+    console.log('findCommand(msgContent)', findCommand(msgContent))
+    msg.reply(findCommand(msgContent))
+  })
+}
+
+function codeMarkdown(reply) {
+  return `\`${reply}\``
+}

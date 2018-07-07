@@ -1,4 +1,65 @@
-const { Client } = require('pg');
+import * as Rx from 'rxjs'
+import * as Sequelize from 'sequelize'
+
+export const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: 'postgres',
+})
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.')
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err)
+  })
+
+export const UserModel = sequelize.define('user', {
+  id: {
+    type: Sequelize.UUID,
+    defaultValue: Sequelize.UUIDV1,
+    allowNull: false,
+    primaryKey: true,
+  },
+  name: {
+    type: Sequelize.STRING,
+  },
+})
+
+export const GroupModel = sequelize.define('group', {
+  id: {
+    type: Sequelize.UUID,
+    allowNull: false,
+    primaryKey: true,
+  },
+  name: {
+    type: Sequelize.STRING,
+  },
+  type: {
+    type: Sequelize.STRING,
+  },
+})
+
+export const SessionModel = sequelize.define('session', {
+  id: {
+    type: Sequelize.UUID,
+    allowNull: false,
+    primaryKey: true,
+  },
+  name: {
+    type: Sequelize.STRING,
+  },
+  date: Sequelize.DATE,
+})
+
+SessionModel.hasMany(GroupModel, { as: 'groups' })
+GroupModel.belongsTo(SessionModel, { as: 'sessions' })
+
+GroupModel.hasMany(UserModel, { as: 'users' })
+UserModel.belongsTo(GroupModel, { as: 'groups' })
+
+/*
+const { Client } = require('pg')
 
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
@@ -15,7 +76,9 @@ client.query('SELECT table_schema,table_name FROM information_schema.tables;', (
   client.end();
 });
 
-var pgp = require('pg-promise')(/*options*/)
+
+
+var pgp = require('pg-promise')(/options/)
 var db = pgp('postgres://username:password@host:port/database')
 
 db.one('SELECT $1 AS value', 123)
@@ -25,3 +88,4 @@ db.one('SELECT $1 AS value', 123)
   .catch(function (error) {
     console.log('ERROR:', error)
   })
+  */

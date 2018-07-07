@@ -1,3 +1,3 @@
-export function remove(arr: Array<any>, item: any) {
-    arr.splice(arr.indexOf(item), 1)
+export function remove<T>(arr: Array<T>, item: T) {
+    return arr.splice(arr.indexOf(item), 1)
 }
