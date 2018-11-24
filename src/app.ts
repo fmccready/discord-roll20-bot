@@ -7,7 +7,7 @@ import bot from './bot'
 import './postgres'
 import './bot/command'
 
-const app = express()
+export const app = express()
 const client = new Discord.Client()
 
 app.use(
@@ -20,8 +20,10 @@ app.use(bodyParser.json())
 app.use(express.static(__dirname + '/frontend'))
 
 app.post('/message', function(req, res) {
+  console.log(req.body[0].value)
   client.emit('message', {
     reply: function(response) {
+      console.log(response)
       res.send(response)
     },
     content: req.body[0].value,

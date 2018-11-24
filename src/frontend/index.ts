@@ -1,17 +1,32 @@
-import * as $ from 'jquery'
-
 var form = document.getElementsByTagName('form')[0]
-var message = (<HTMLInputElement>document.getElementById('message')).value
-console.log(form)
 
 form.onsubmit = function(event) {
   event.preventDefault()
-  const data = $(form).serializeArray()
-  $.post({
-    url: '/message',
-    data: JSON.stringify(data),
-    contentType: 'application/json',
-  }).then(function(data) {
-    console.log(data)
+
+  const inputs = form.getElementsByTagName('input')
+  const data = serialize(inputs)
+
+  fetch('/message', {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+    },
+    body: JSON.stringify(data),
+  }).then(response => {
+    console.log(
+      response.json().then(res => {
+        console.log(res)
+      })
+    )
   })
+}
+
+function serialize(data) {
+  const serializedData = []
+  for (let i = 0; i < data.length; i++) {
+    let name = data[i].name
+    let value = data[i].value
+    serializedData.push({ name, value })
+  }
+  return serializedData
 }

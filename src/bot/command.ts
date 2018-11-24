@@ -1,5 +1,6 @@
 import { Observable, BehaviorSubject } from 'rxjs'
 import { union } from 'ramda'
+import { getSessions, SessionInstance } from '../models/session'
 import { remove } from '../utilities'
 //import { createSession, removeSession } from '../models/session'
 
@@ -8,6 +9,14 @@ export interface Command {
   instruction: string
   action: Function
 }
+
+var sessions: Array<SessionInstance>
+
+getSessions().subscribe({
+  next: value => {
+    sessions = value
+  },
+})
 
 const commands$ = new BehaviorSubject(commands)
 
@@ -19,20 +28,20 @@ var commands: Array<Command> = [
   {
     name: 'sessions',
     instruction: 'Say "sessions" to see the available sessions.',
-    action: function(msg, sessions) {
+    action: function(msg) {
       var response = ''
-      /*
+
       sessions.forEach(function(session) {
         response.concat(`${session} \n`)
       })
-      */
       return response
     },
   },
+  /*
   {
     name: 'signup',
     instruction: 'Say "signup" to RSVP to the session.',
-    action: function(msg, user) {
+    action: function(msg) {
       user.push(msg.author)
       return user.toString()
     },
@@ -40,18 +49,19 @@ var commands: Array<Command> = [
   {
     name: 'cancel',
     instruction: 'Say "cancel" to remove yourself from the game.',
-    action: function(msg, signups) {
+    action: function(msg) {
       signups.splice(signups.indexOf(msg.author), 1)
       return signups.toString()
     },
   },
   {
-    name: 'players',
-    instruction: 'Say "players" to see who is playing.',
-    action: function(msg, users) {
+    name: 'users',
+    instruction: 'Say "users" to see a list of users.',
+    action: function(msg) {
       return users.toString()
     },
   },
+  */
   {
     name: 'ping',
     instruction: `Say "ping" and I'll say "pong"`,

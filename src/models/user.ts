@@ -1,5 +1,5 @@
 import { Subject, Observer, Observable } from 'rxjs'
-import { Instance, UUID, UUIDV1, STRING } from 'sequelize'
+import { Instance, Op, UUID, UUIDV1, STRING } from 'sequelize'
 import { sequelize, UserModel } from '../postgres'
 
 export interface UserAttributes {
@@ -17,7 +17,9 @@ export function createUser(name: string) {
 export function findUserById(userId: string) {
   return UserModel.findOne({
     where: {
-      id: userId,
+      id: {
+        [Op.eq]: userId,
+      },
     },
   }).then((user: UserInstance) => {
     console.log(user)
@@ -27,7 +29,9 @@ export function findUserById(userId: string) {
 export function findUsersByGroupId(groupId: string) {
   return UserModel.findAll({
     where: {
-      id: groupId,
+      id: {
+        [Op.eq]: groupId,
+      },
     },
   }).then((users: Array<UserInstance>) => {
     users.forEach(user => {

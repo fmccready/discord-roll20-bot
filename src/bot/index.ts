@@ -18,7 +18,7 @@ function defaultReply() {
   return reply
 }
 
-export function findCommand(command: string, argument?: any): () => string {
+export function findCommand(command: string): (msg: any) => string {
   var nameEqualsCommand = propEq('name', command)
   var foundCommandInList = find(nameEqualsCommand, commandList)
   if (foundCommandInList) {
@@ -30,9 +30,9 @@ export function findCommand(command: string, argument?: any): () => string {
 
 export default function init(client: Client) {
   client.on('message', msg => {
-    let msgContent = msg.content.toLowerCase()
-    console.log('findCommand(msgContent)', findCommand(msgContent))
-    msg.reply(findCommand(msgContent))
+    const msgContent = msg.content.toLowerCase()
+    const command = findCommand(msgContent)
+    msg.reply({ response: command(msgContent) })
   })
 }
 
