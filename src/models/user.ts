@@ -6,7 +6,7 @@ export interface UserAttributes {
   id?: string
   name: string
 }
-export interface UserInstance extends Sequelize.Instance<UserAttributes>, UserAttributes{
+export interface UserInstance extends Sequelize.Instance<UserAttributes>, UserAttributes {
 
 }
 
@@ -35,7 +35,7 @@ export function findUsersByGroupId(groupId: string) {
         [Op.eq]: groupId,
       },
     },
-  }).then((users: Array<UserInstance>) => {
+  }).then((users: UserInstance[]) => {
     users.forEach(user => {
       console.log(user)
     })

@@ -1,8 +1,9 @@
 import * as Sequelize from 'sequelize'
+import { GroupAttributes, GroupInstance } from './models/group'
 import { SessionAttributes, SessionInstance } from './models/session'
 import { UserAttributes, UserInstance } from './models/user'
-import { GroupAttributes, GroupInstance } from './models/group'
 const Op = Sequelize.Op
+/* tslint:disable:object-literal-sort-keys */
 const operatorsAliases = {
   $eq: Op.eq,
   $ne: Op.ne,
@@ -37,29 +38,30 @@ const operatorsAliases = {
   $any: Op.any,
   $all: Op.all,
   $values: Op.values,
-  $col: Op.col
+  $col: Op.col,
 }
+/* tslint:enable:object-literal-sort-keys */
 export const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
   logging: false,
-  operatorsAliases: operatorsAliases
+  operatorsAliases: operatorsAliases,
 })
 
 sequelize
   .authenticate()
   .then(() => {
-    //console.log('Connection has been established successfully.')
+    // console.log('Connection has been established successfully.')
   })
-  .catch(err => {
+  .catch((err) => {
     console.error('Unable to connect to the database:', err)
   })
 
 export const UserModel = sequelize.define<UserInstance, UserAttributes>('user', {
   id: {
-    type: Sequelize.UUID,
-    defaultValue: Sequelize.UUIDV1,
     allowNull: false,
+    defaultValue: Sequelize.UUIDV1,
     primaryKey: true,
+    type: Sequelize.UUID,
   },
   name: {
     type: Sequelize.STRING,
@@ -68,26 +70,26 @@ export const UserModel = sequelize.define<UserInstance, UserAttributes>('user', 
 
 export const GroupModel = sequelize.define<GroupInstance, GroupAttributes>('group', {
   id: {
-    type: Sequelize.UUID,
-    defaultValue: Sequelize.UUIDV1,
     allowNull: false,
+    defaultValue: Sequelize.UUIDV1,
     primaryKey: true,
+    type: Sequelize.UUID,
   },
   name: {
     type: Sequelize.STRING,
-  }
+  },
 })
 
 export const SessionModel = sequelize.define<SessionInstance, SessionAttributes>('session', {
   id: {
-    type: Sequelize.UUID,
-    defaultValue: Sequelize.UUIDV1,
     allowNull: false,
+    defaultValue: Sequelize.UUIDV1,
     primaryKey: true,
+    type: Sequelize.UUID,
   },
   name: {
     type: Sequelize.STRING,
-  }
+  },
 })
 
 UserModel.sync()
@@ -117,8 +119,6 @@ client.query('SELECT table_schema,table_name FROM information_schema.tables;', (
   }
   client.end();
 });
-
-
 
 var pgp = require('pg-promise')(/options/)
 var db = pgp('postgres://username:password@host:port/database')

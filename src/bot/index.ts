@@ -1,8 +1,8 @@
-import { find, tap, propEq, defaultTo } from 'ramda'
 import { Client } from 'discord.js'
+import { defaultTo, find, propEq, tap } from 'ramda'
 import { Command, getCommands } from './command'
 
-var commandList: Array<Command> = []
+let commandList: Command[] = []
 
 getCommands().subscribe(commands => {
   commandList = commands
@@ -19,8 +19,8 @@ function defaultReply() {
 }
 
 export function findCommand(command: string): (msg?: any) => string {
-  var nameEqualsCommand = propEq('name', command.toLowerCase())
-  var foundCommandInList = find(nameEqualsCommand, commandList)
+  const nameEqualsCommand = propEq('name', command.toLowerCase())
+  const foundCommandInList = find(nameEqualsCommand, commandList)
   if (foundCommandInList) {
     return foundCommandInList.action
   } else {

@@ -1,13 +1,13 @@
-import { Observable, BehaviorSubject } from 'rxjs'
 import { union } from 'ramda'
+import { BehaviorSubject, Observable } from 'rxjs'
 import { getSessions } from '../models/session'
 import { remove } from '../utilities'
-//import { createSession, removeSession } from '../models/session'
+// import { createSession, removeSession } from '../models/session'
 
 export interface Command {
   name: string
   instruction: string
-  action: Function
+  action: (...T) => string
 }
 
 // var sessions: Array<SessionInstance>
@@ -18,19 +18,11 @@ export interface Command {
 //   },
 // })
 
-const commands$ = new BehaviorSubject(commands)
-
-export function getCommands() {
-  return commands$.asObservable()
-}
-
-var commands: Array<Command> = [
+const commands: Command[] = [
   {
-    name: 'sessions',
-    instruction: 'Say "sessions" to see the available sessions.',
     action: function(msg) {
-      var response = ''
-      getSessions().subscribe(sessions => {
+      const response = ''
+      getSessions().subscribe((sessions) => {
         sessions.forEach(function(session) {
           response.concat(`${session} \n`)
         })
@@ -38,6 +30,8 @@ var commands: Array<Command> = [
 
       return response
     },
+    instruction: 'Say "sessions" to see the available sessions.',
+    name: 'sessions',
   },
   /*
   {
@@ -65,11 +59,11 @@ var commands: Array<Command> = [
   },
   */
   {
-    name: 'ping',
-    instruction: `Say "ping" and I'll say "pong"`,
     action: function() {
       return 'pong'
     },
+    instruction: `Say "ping" and I'll say "pong"`,
+    name: 'ping',
   },
   /*
   {
@@ -84,6 +78,12 @@ var commands: Array<Command> = [
   },
   */
 ]
+
+const commands$ = new BehaviorSubject(commands)
+
+export function getCommands() {
+  return commands$.asObservable()
+}
 
 commands$.next(commands)
 

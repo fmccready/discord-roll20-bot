@@ -1,11 +1,12 @@
-require('dotenv').config()
-import * as express from 'express'
 import * as bodyParser from 'body-parser'
-import * as path from 'path'
 import * as Discord from 'discord.js'
+import * as dotenv from 'dotenv'
+import * as express from 'express'
 import bot from './bot'
-import './postgres'
 import './bot/command'
+import './postgres'
+
+dotenv.config()
 
 export const app = express()
 const client = new Discord.Client()
@@ -13,7 +14,7 @@ const client = new Discord.Client()
 app.use(
   bodyParser.urlencoded({
     extended: true,
-  })
+  }),
 )
 app.use(bodyParser.json())
 
@@ -22,11 +23,11 @@ app.use(express.static(__dirname + '/frontend'))
 app.post('/message', function(req, res) {
   console.log(req.body[0].value)
   client.emit('message', {
+    content: req.body[0].value,
     reply: function(response) {
       console.log(response)
       res.send(response)
     },
-    content: req.body[0].value,
   })
 })
 

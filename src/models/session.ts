@@ -1,20 +1,18 @@
-import * as Sequelize from 'sequelize'
 import { BehaviorSubject } from 'rxjs'
+import * as Sequelize from 'sequelize'
 import { SessionModel } from '../postgres'
 import { remove } from '../utilities/remove'
 
-var sessionSubject = new BehaviorSubject<Array<SessionInstance>>([])
+const sessionSubject = new BehaviorSubject<SessionInstance[]>([])
 
 export function createSession(name: string) {
-  var session = SessionModel.create({
+  return SessionModel.create({
     name: name,
-  }).tap(session => {
+  }).tap((session) => {
     const sessions = sessionSubject.getValue()
     sessions.push(session)
     sessionSubject.next(sessions)
   })
-
-  return session
 }
 
 export function getSessions() {
@@ -24,10 +22,9 @@ export function getSessions() {
 export function removeSession(sessionInstance: SessionInstance) {
   return sessionInstance.destroy().then(() => {
       sessionSubject.next(remove(sessionSubject.getValue(), sessionInstance))
-    return getSessions()
+      return getSessions()
   })
 }
-
 
 export interface SessionAttributes {
   id?: number
@@ -36,6 +33,6 @@ export interface SessionAttributes {
   updatedAt?: Date
 }
 
-export interface SessionInstance extends Sequelize.Instance<SessionAttributes>, SessionAttributes{
+export interface SessionInstance extends Sequelize.Instance<SessionAttributes>, SessionAttributes {
 
 }

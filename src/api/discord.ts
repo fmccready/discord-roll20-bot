@@ -1,18 +1,18 @@
 import * as express from 'express'
 const router = express.Router()
-import * as fetch from 'node-fetch'
 import btoa from 'btoa'
+import * as fetch from 'node-fetch'
 import { catchAsyncErrors } from 'Utilities'
 
 const redirect = encodeURIComponent(
-  'https://young-brook-14583.herokuapp.com/api/discord/callback'
+  'https://young-brook-14583.herokuapp.com/api/discord/callback',
 )
 
 router.get('/login', (req, res) => {
   res.redirect(
     `https://discordapp.com/oauth2/authorize?client_id=${
       process.env.CLIENT_ID
-    }&scope=identify&response_type=code&redirect_uri=${redirect}`
+    }&scope=identify&response_type=code&redirect_uri=${redirect}`,
   )
 })
 
@@ -25,11 +25,11 @@ router.get(
     const response = await fetch(
       `https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${redirect}`,
       {
-        method: 'POST',
         headers: {
           Authorization: `Basic ${creds}`,
         },
-      }
+        method: 'POST',
+      },
     )
     const json = await response.json()
     res.cookie('access_token', `${json.access_token}`, {
@@ -37,7 +37,7 @@ router.get(
       path: '/',
       secure: true,
     })
-  })
+  }),
 )
 
 module.exports = router

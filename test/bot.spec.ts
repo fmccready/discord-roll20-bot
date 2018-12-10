@@ -1,27 +1,27 @@
-const dotenv = require('dotenv')
-const path = require('path')
+import * as dotenv from 'dotenv'
+import * as path from 'path'
 dotenv.config({ path: path.join(__dirname, '../.env') })
 
 import { assert } from 'chai'
-import { sequelize } from '../src/postgres'
-import { getCommands, addCommands, Command } from '../src/bot/command'
 import { findCommand } from '../src/bot'
+import { addCommands, Command, getCommands } from '../src/bot/command'
 import {
   createSession,
-  removeSession,
   getSessions,
+  removeSession,
 } from '../src/models/session'
 import {
   createUser,
   findUserById,
   findUsersByGroupId,
 } from '../src/models/user'
+import { sequelize } from '../src/postgres'
 
-var commands: Command[]
+let commands: Command[]
 
 describe('Discord bot', function() {
   before(function() {
-    getCommands().subscribe(next => (commands = next))
+    getCommands().subscribe((next) => (commands = next))
   })
 
   it('Has a list of commands', function() {
@@ -30,12 +30,12 @@ describe('Discord bot', function() {
   })
 
   it('Finds a command in an array', function() {
-    var ping = findCommand('ping')
+    const ping = findCommand('ping')
     assert.equal(ping(), 'pong')
   })
 
   it('Can add and remove a session from the database.', function(done) {
-    createSession('Test').then(data => {
+    createSession('Test').then((data) => {
       assert(data.getDataValue('name') === 'Test')
       removeSession(data).then(() => {
         done()
@@ -45,33 +45,33 @@ describe('Discord bot', function() {
 
   it('Can get a list of available sessions from the database.', function(done) {
     this.timeout(6000)
-    getSessions().subscribe(nextSessions => {
-      nextSessions.map(function(session){
-        if(session.name === 'test2') {
+    getSessions().subscribe((nextSessions) => {
+      nextSessions.map(function(session) {
+        if (session.name === 'test2') {
           assert(true)
-          done()  
+          done()
         }
       })
     })
-    
+
     createSession('test2')
   })
 
   it('Allows you to add commands', function() {
-    var testCommands = [
+    const testCommands = [
       {
-        name: 'test1',
-        instruction: 'Say "test1" to test.',
         action: function(msg, user) {
           return 'zomg it works!'
         },
+        instruction: 'Say "test1" to test.',
+        name: 'test1',
       },
       {
-        name: 'test2',
-        instruction: 'Say "test2" to test again.',
         action: function(msg, user) {
           return 'zomg it works again!'
         },
+        instruction: 'Say "test2" to test again.',
+        name: 'test2',
       },
     ]
     addCommands(testCommands)
@@ -80,7 +80,7 @@ describe('Discord bot', function() {
   })
 
   it('Can create new users', function() {
-    createUser('test-user').then(function(user){
+    createUser('test-user').then(function(user) {
       assert(user.name === 'test-user')
     })
   })

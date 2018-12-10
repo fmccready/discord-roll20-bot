@@ -7,7 +7,7 @@ export interface GroupAttributes {
   name: string
 }
 export interface GroupInstance extends Sequelize.Instance<GroupAttributes>, GroupAttributes {
-  
+
 }
 
 function createGroup(name: string) {

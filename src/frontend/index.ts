@@ -1,4 +1,4 @@
-var form = document.getElementsByTagName('form')[0]
+const form = document.getElementsByTagName('form')[0]
 
 form.onsubmit = function(event) {
   event.preventDefault()
@@ -7,25 +7,25 @@ form.onsubmit = function(event) {
   const data = serialize(inputs)
 
   fetch('/message', {
-    method: 'post',
+    body: JSON.stringify(data),
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
     },
-    body: JSON.stringify(data),
+    method: 'post',
   }).then(response => {
     console.log(
       response.json().then(res => {
         console.log(res)
-      })
+      }),
     )
   })
 }
 
 function serialize(data) {
   const serializedData = []
-  for (let i = 0; i < data.length; i++) {
-    let name = data[i].name
-    let value = data[i].value
+  for (const d of data) {
+    const name = d.name
+    const value = d.value
     serializedData.push({ name, value })
   }
   return serializedData
