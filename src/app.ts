@@ -1,12 +1,11 @@
+import * as dotenv from 'dotenv'
+dotenv.config()
 import * as bodyParser from 'body-parser'
 import * as Discord from 'discord.js'
-import * as dotenv from 'dotenv'
 import * as express from 'express'
 import bot from './bot'
 import './bot/command'
 import './postgres'
-
-dotenv.config()
 
 export const app = express()
 const client = new Discord.Client()

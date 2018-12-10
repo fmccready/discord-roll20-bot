@@ -13,11 +13,10 @@ form.onsubmit = function(event) {
     },
     method: 'post',
   }).then(response => {
-    console.log(
-      response.json().then(res => {
-        console.log(res)
-      }),
-    )
+    return response.json().then(res => {
+      console.log(res)
+      return res
+    })
   })
 }
 
