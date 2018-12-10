@@ -1,10 +1,48 @@
-const Sequelize = require('sequelize')
+import * as Sequelize from 'sequelize'
+import { SessionAttributes, SessionInstance } from './models/session'
+import { UserAttributes, UserInstance } from './models/user'
+import { GroupAttributes, GroupInstance } from './models/group'
 const Op = Sequelize.Op
-
+const operatorsAliases = {
+  $eq: Op.eq,
+  $ne: Op.ne,
+  $gte: Op.gte,
+  $gt: Op.gt,
+  $lte: Op.lte,
+  $lt: Op.lt,
+  $not: Op.not,
+  $in: Op.in,
+  $notIn: Op.notIn,
+  $is: Op.is,
+  $like: Op.like,
+  $notLike: Op.notLike,
+  $iLike: Op.iLike,
+  $notILike: Op.notILike,
+  $regexp: Op.regexp,
+  $notRegexp: Op.notRegexp,
+  $iRegexp: Op.iRegexp,
+  $notIRegexp: Op.notIRegexp,
+  $between: Op.between,
+  $notBetween: Op.notBetween,
+  $overlap: Op.overlap,
+  $contains: Op.contains,
+  $contained: Op.contained,
+  $adjacent: Op.adjacent,
+  $strictLeft: Op.strictLeft,
+  $strictRight: Op.strictRight,
+  $noExtendRight: Op.noExtendRight,
+  $noExtendLeft: Op.noExtendLeft,
+  $and: Op.and,
+  $or: Op.or,
+  $any: Op.any,
+  $all: Op.all,
+  $values: Op.values,
+  $col: Op.col
+}
 export const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
-  operatorsAliases: Op,
   logging: false,
+  operatorsAliases: operatorsAliases
 })
 
 sequelize
@@ -16,7 +54,7 @@ sequelize
     console.error('Unable to connect to the database:', err)
   })
 
-export const UserModel = sequelize.define('user', {
+export const UserModel = sequelize.define<UserInstance, UserAttributes>('user', {
   id: {
     type: Sequelize.UUID,
     defaultValue: Sequelize.UUIDV1,
@@ -28,7 +66,7 @@ export const UserModel = sequelize.define('user', {
   },
 })
 
-export const GroupModel = sequelize.define('group', {
+export const GroupModel = sequelize.define<GroupInstance, GroupAttributes>('group', {
   id: {
     type: Sequelize.UUID,
     defaultValue: Sequelize.UUIDV1,
@@ -37,13 +75,10 @@ export const GroupModel = sequelize.define('group', {
   },
   name: {
     type: Sequelize.STRING,
-  },
-  type: {
-    type: Sequelize.STRING,
-  },
+  }
 })
 
-export const SessionModel = sequelize.define('session', {
+export const SessionModel = sequelize.define<SessionInstance, SessionAttributes>('session', {
   id: {
     type: Sequelize.UUID,
     defaultValue: Sequelize.UUIDV1,
@@ -52,8 +87,7 @@ export const SessionModel = sequelize.define('session', {
   },
   name: {
     type: Sequelize.STRING,
-  },
-  date: Sequelize.DATE,
+  }
 })
 
 UserModel.sync()

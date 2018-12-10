@@ -3,18 +3,19 @@ const path = require('path')
 dotenv.config({ path: path.join(__dirname, '../.env') })
 
 import { assert } from 'chai'
-import { Observable, BehaviorSubject } from 'rxjs'
 import { sequelize } from '../src/postgres'
 import { getCommands, addCommands, Command } from '../src/bot/command'
 import { findCommand } from '../src/bot'
-import { SessionInstance } from '../src/models/session'
 import {
   createSession,
   removeSession,
   getSessions,
 } from '../src/models/session'
-
-sequelize.logging = () => {}
+import {
+  createUser,
+  findUserById,
+  findUsersByGroupId,
+} from '../src/models/user'
 
 var commands: Command[]
 
@@ -35,7 +36,7 @@ describe('Discord bot', function() {
 
   it('Can add and remove a session from the database.', function(done) {
     createSession('Test').then(data => {
-      assert.nestedPropertyVal(data, 'dataValues.name', 'Test')
+      assert(data.getDataValue('name') === 'Test')
       removeSession(data).then(() => {
         done()
       })
@@ -43,12 +44,16 @@ describe('Discord bot', function() {
   })
 
   it('Can get a list of available sessions from the database.', function(done) {
-    getSessions().subscribe({
-      next: nextSessions => {
-        assert(nextSessions[0].dataValues.name === 'test2')
-        done()
-      },
+    this.timeout(6000)
+    getSessions().subscribe(nextSessions => {
+      nextSessions.map(function(session){
+        if(session.name === 'test2') {
+          assert(true)
+          done()  
+        }
+      })
     })
+    
     createSession('test2')
   })
 
@@ -74,47 +79,13 @@ describe('Discord bot', function() {
     assert.equal(findCommand('test2')(), 'zomg it works again!')
   })
 
+  it('Can create new users', function() {
+    createUser('test-user').then(function(user){
+      assert(user.name === 'test-user')
+    })
+  })
+
   after(function() {
     sequelize.close()
   })
 })
-/*
-  it('Should get the list of commands and return the ping command', function() {
-    assert.sameMembers
-    assert.equal(commands['ping'].action(), 'pong')
-  })
-
-  var testCommand1 = [
-    {
-      name: 'test1',
-      instruction: 'Say "test" to test.',
-      action: function(msg, user) {
-        return 'zomg it works!'
-      },
-    },
-    {
-      name: 'test2',
-      instruction: 'Say "test" to test.',
-      action: function(msg, user) {
-        return 'zomg it works!'
-      },
-    },
-  ]
-  var testCommand2 = [
-    {
-      name: 'test2',
-      instruction: 'Say "test2" to test.',
-      action: function(msg, user) {
-        return 'zomg it works2222!'
-      },
-    },
-    {
-      name: 'test3',
-      instruction: 'Say "test3" to test.',
-      action: function(msg, user) {
-        return 'zomg it works33333!'
-      },
-    },
-  ]
-})
-*/

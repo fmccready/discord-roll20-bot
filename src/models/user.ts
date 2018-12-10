@@ -1,12 +1,14 @@
-import { Subject, Observer, Observable } from 'rxjs'
-import { Instance, Op, UUID, UUIDV1, STRING } from 'sequelize'
-import { sequelize, UserModel } from '../postgres'
+import { Op } from 'sequelize'
+import * as Sequelize from 'sequelize'
+import { UserModel } from '../postgres'
 
 export interface UserAttributes {
-  id: string
+  id?: string
   name: string
 }
-export type UserInstance = Instance<UserAttributes> & UserAttributes
+export interface UserInstance extends Sequelize.Instance<UserAttributes>, UserAttributes{
+
+}
 
 export function createUser(name: string) {
   return UserModel.create({

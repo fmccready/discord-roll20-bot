@@ -1,11 +1,14 @@
 import { Instance, Op } from 'sequelize'
+import * as Sequelize from 'sequelize'
 import { GroupModel } from '../postgres'
 
-interface GroupAttributes {
-  id: string
+export interface GroupAttributes {
+  id?: string
   name: string
 }
-type GroupInstance = Instance<GroupAttributes> & GroupAttributes
+export interface GroupInstance extends Sequelize.Instance<GroupAttributes>, GroupAttributes {
+  
+}
 
 function createGroup(name: string) {
   return GroupModel.create({

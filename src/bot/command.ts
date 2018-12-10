@@ -1,6 +1,6 @@
 import { Observable, BehaviorSubject } from 'rxjs'
 import { union } from 'ramda'
-import { getSessions, SessionInstance } from '../models/session'
+import { getSessions } from '../models/session'
 import { remove } from '../utilities'
 //import { createSession, removeSession } from '../models/session'
 
@@ -10,13 +10,13 @@ export interface Command {
   action: Function
 }
 
-var sessions: Array<SessionInstance>
+// var sessions: Array<SessionInstance>
 
-getSessions().subscribe({
-  next: value => {
-    sessions = value
-  },
-})
+// getSessions().subscribe({
+//   next: value => {
+//     sessions = value
+//   },
+// })
 
 const commands$ = new BehaviorSubject(commands)
 
@@ -30,10 +30,12 @@ var commands: Array<Command> = [
     instruction: 'Say "sessions" to see the available sessions.',
     action: function(msg) {
       var response = ''
-
-      sessions.forEach(function(session) {
-        response.concat(`${session} \n`)
+      getSessions().subscribe(sessions => {
+        sessions.forEach(function(session) {
+          response.concat(`${session} \n`)
+        })
       })
+
       return response
     },
   },
