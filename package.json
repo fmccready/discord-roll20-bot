@@ -65,5 +65,8 @@
     "tslint": "^5.11.0",
     "webpack": "^4.15.1",
     "webpack-cli": "^2.1.5"
+  },
+  "engines": {
+    "node": "10.13.0"
   }
 }

@@ -1,0 +1,14 @@
+{
+    "buildpacks": [
+        {
+            "url": "heroku/nodejs"
+        }
+    ],
+    "environments": {
+        "test": {
+            "scripts": {
+                "test": "mocha -r ts-node/register test/**/*.ts"
+            }
+        }
+    }
+}
