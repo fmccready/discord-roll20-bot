@@ -7,11 +7,12 @@
     "clean": "rm -rf dist",
     "build": "npm run clean && mkdir dist && tsc",
     "build-webpack": "webpack --config webpack.config.js",
+    "build-production-webpack": "webpack -p --config webpack.config.js",
     "watch-webpack": "webpack --watch --config webpack.config.js",
-    "start": "npm run build && npm run build-webpack && node dist/app.js",
+    "start": "npm run build && npm run build-production-webpack && node dist/app.js",
     "dev": "npm run build && concurrently \"node dist/app.js\" \"npm run watch-webpack\"",
     "test": "mocha -r ts-node/register test/**/*.ts",
-    "heroku-prebuild": "npm i --dev"
+    "heroku-postbuild": "npm run build-production-webpack"
   },
   "keywords": [
     "roll20",
