@@ -2,7 +2,7 @@ import * as express from 'express'
 const router = express.Router()
 import btoa from 'btoa'
 import * as fetch from 'node-fetch'
-import { catchAsyncErrors } from 'Utilities'
+import { catchAsyncErrors } from '../utilities'
 
 const redirect = encodeURIComponent(
   'https://young-brook-14583.herokuapp.com/api/discord/callback',
