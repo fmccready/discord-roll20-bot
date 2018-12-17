@@ -5,10 +5,10 @@
   "main": "app.js",
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "npm run clean && mkdir dist && tsc",
+    "build": "mkdir dist && tsc",
     "watch-webpack": "webpack --watch --config webpack.config.js",
-    "start": "node dist/app.js",
-    "dev": "npm run build && concurrently \"node dist/app.js\" \"npm run watch-webpack\"",
+    "start": "npm run build && node dist/app.js",
+    "dev": "npm run clean && npm run build && concurrently \"node dist/app.js\" \"npm run watch-webpack\"",
     "test": "mocha -r ts-node/register test/**/*.ts",
     "heroku-postbuild": "webpack -p --config webpack.config.js"
   },
