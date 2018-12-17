@@ -51,7 +51,7 @@ module.exports = ['source-map'].map(devtool => ({
   ],
   devtool,
   mode: 'production',
-  watch: true,
+  watch: false,
   watchOptions: {
     aggregateTimeout: 2000,
   },
