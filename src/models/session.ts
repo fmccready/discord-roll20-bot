@@ -18,14 +18,14 @@ export function createSession(name: string) {
 export function getSessions() {
   return sessionSubject
 }
-
+/*
 export function removeSession(sessionInstance: SessionInstance) {
   return sessionInstance.destroy().then(() => {
       sessionSubject.next(remove(sessionSubject.getValue(), sessionInstance))
       return getSessions()
   })
 }
-
+*/
 export interface SessionAttributes {
   id?: number
   name: string
