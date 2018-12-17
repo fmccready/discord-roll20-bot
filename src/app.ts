@@ -32,10 +32,11 @@ app.post('/message', function(req, res) {
 })
 
 app.get('/', (req, res) => {
-    client.generateInvite(['SEND_MESSAGES', 'MENTION_EVERYONE']).then(link => {
-        console.log(`Bot invite link: ${link}`)
-    })
-    res.status(200).sendFile(path.join(__dirname, 'frontend/index.html'))
+  console.log('get')
+  client.generateInvite(['SEND_MESSAGES', 'MENTION_EVERYONE']).then(link => {
+      console.log(`Bot invite link: ${link}`)
+  })
+  res.status(200).sendFile(path.join(__dirname, 'frontend/index.html'))
 })
 
 app.listen(process.env.PORT || 8080, () => {
