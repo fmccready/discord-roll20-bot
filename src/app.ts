@@ -3,6 +3,7 @@ dotenv.config()
 import * as bodyParser from 'body-parser'
 import * as Discord from 'discord.js'
 import * as express from 'express'
+import * as path from 'path'
 import bot from './bot'
 import './bot/command'
 import './postgres'
@@ -30,14 +31,12 @@ app.post('/message', function(req, res) {
   })
 })
 
-/*
 app.get('/', (req, res) => {
     client.generateInvite(['SEND_MESSAGES', 'MENTION_EVERYONE']).then(link => {
         console.log(`Bot invite link: ${link}`)
     })
     res.status(200).sendFile(path.join(__dirname, 'frontend/index.html'))
 })
-*/
 
 app.listen(process.env.PORT || 8080, () => {
   console.info(`Running on port ${process.env.PORT || 8080}`)
