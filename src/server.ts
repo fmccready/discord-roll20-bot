@@ -42,6 +42,11 @@ app.get('/test', (req, res) => {
   console.log('test')
   res.status(200).send('Hello')
 })
+app.get('/invite', (req, res) => {
+  client.generateInvite(['SEND_MESSAGES', 'MENTION_EVERYONE']).then(link => {
+    res.status(200).send(link)
+  })
+})
 app.listen(process.env.PORT || 8080, () => {
   console.info(`Running on port ${process.env.PORT || 8080}`)
 })
