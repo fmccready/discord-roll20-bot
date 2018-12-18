@@ -32,7 +32,7 @@ app.post('/message', function(req, res) {
 })
 
 app.get('/', (req, res) => {
-  console.log('get')
+  console.log(`Why doesn't this show up in the logs?`)
   client.generateInvite(['SEND_MESSAGES', 'MENTION_EVERYONE']).then(link => {
     console.log(`Bot invite link: ${link}`)
   })
