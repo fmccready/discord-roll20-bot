@@ -2,11 +2,11 @@
   "name": "discord-roll20-bot",
   "version": "0.0.1",
   "description": "A bot that will let people signup for a roll20 game on discord.",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
     "clean": "rm -rf dist && mkdir dist",
     "watch-webpack": "webpack --watch --config webpack.config.js",
-    "start": "tsc && node dist/app.js",
+    "start": "tsc && node dist/server.js",
     "dev": "npm run clean && tsc && concurrently \"node dist/app.js\" \"npm run watch-webpack\"",
     "test": "mocha -r ts-node/register test/**/*.ts",
     "heroku-postbuild": "webpack -p --config webpack.config.js"
