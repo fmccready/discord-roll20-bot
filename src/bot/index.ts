@@ -30,7 +30,7 @@ export default function init(client: Client) {
     const command = findCommand(msgContent)
     if (command) {
       console.log(command(msgContent))
-      msg.reply({ response: command(msgContent) })
+      msg.reply(command(msgContent))
     }
   })
 }
