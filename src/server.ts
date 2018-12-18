@@ -40,7 +40,7 @@ app.get('/', (req, res) => {
 })
 app.get('/test', (req, res) => {
   console.log('test')
-  res.status(200).sendFile(path.join('Hello'))
+  res.status(200).send('Hello')
 })
 app.listen(process.env.PORT || 8080, () => {
   console.info(`Running on port ${process.env.PORT || 8080}`)
