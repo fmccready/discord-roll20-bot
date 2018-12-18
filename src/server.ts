@@ -38,7 +38,10 @@ app.get('/', (req, res) => {
   })
   res.status(200).sendFile(path.join(__dirname, 'frontend/index.html'))
 })
-
+app.get('/test', (req, res) => {
+  console.log('test')
+  res.status(200).sendFile(path.join('Hello'))
+})
 app.listen(process.env.PORT || 8080, () => {
   console.info(`Running on port ${process.env.PORT || 8080}`)
 })
