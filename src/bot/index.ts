@@ -28,7 +28,10 @@ export default function init(client: Client) {
   client.on('message', msg => {
     const msgContent = msg.content
     const command = findCommand(msgContent)
-    if (command) msg.reply({ response: command(msgContent) })
+    if (command) {
+      console.log(command(msgContent))
+      msg.reply({ response: command(msgContent) })
+    }
   })
 }
 
