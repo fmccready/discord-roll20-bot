@@ -1,4 +1,4 @@
-import { Client } from 'discord.js'
+import { Client, Message } from 'discord.js'
 import { defaultTo, find, propEq, tap } from 'ramda'
 import { Command, getCommands } from './command'
 
@@ -24,15 +24,15 @@ export function findCommand(command: string): (msg?: any) => string {
   if (foundCommandInList) return foundCommandInList.action
 }
 
-export default function init(client: Client) {
-  client.on('message', msg => {
+export function messageHandler(msg: Message) {
+  if (msg.channel.type === 'dm') {
     const msgContent = msg.content
     const command = findCommand(msgContent)
     if (command) {
       console.log(command(msgContent))
       msg.reply(command(msgContent))
     }
-  })
+  }
 }
 
 function codeMarkdown(reply) {

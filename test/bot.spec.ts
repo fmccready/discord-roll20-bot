@@ -1,91 +1,42 @@
-import * as dotenv from 'dotenv'
-import * as path from 'path'
-dotenv.config({ path: path.join(__dirname, '../.env') })
+import { assert, expect } from 'chai'
+import * as Discord from 'discord.js'
+import fs from 'fs'
+import { SinonSpy, spy } from 'sinon'
 
-import { assert } from 'chai'
-import { findCommand } from '../src/bot'
-import { addCommands, Command, getCommands } from '../src/bot/command'
-import {
-  createSession,
-  getSessions,
-//  removeSession,
-} from '../src/models/session'
-import {
-  createUser,
-  findUserById,
-  findUsersByGroupId,
-} from '../src/models/user'
-import { sequelize } from '../src/postgres'
+import { messageHandler } from '../src/bot'
 
-let commands: Command[]
+let client: Discord.Client
+// let messageHandlerSpy: SinonSpy
 
-describe('Discord bot', function() {
-  before(function() {
-    getCommands().subscribe((next) => (commands = next))
+before('Setup discord client', function(done) {
+  this.timeout(10000)
+  client = new Discord.Client()
+  // messageHandlerSpy = spy(messageHandler)
+  // client.on('message', messageHandlerSpy)
+  client.login(process.env.TOKEN).then((res) => {
+    fs.writeFileSync('./data/login.json', JSON.stringify(res))
+    console.log(`logged in as ${client.user.tag}`)
+    done()
   })
+})
 
-  it('Has a list of commands', function() {
-    assert.isArray(commands)
-    assert.isNotEmpty(commands)
+describe('When a message is received', function() {
+  it('Should respond to DMs', function(done) {
+    // Create a DM
+    console.log('client -------- ')
+    console.log(Object.keys(client))
+    console.log('-------------------')
+    const channels = client.channels.values()
+    fs.writeFileSync('./data/channels.json', JSON.stringify(channels))
+    console.log(channels.next())
   })
+})
 
-  it('Finds a command in an array', function() {
-    const ping = findCommand('ping')
-    assert.equal(ping(), 'pong')
-  })
-/*
-  it('Can add and remove a session from the database.', function(done) {
-    createSession('Test').then((data) => {
-      assert(data.getDataValue('name') === 'Test')
-      removeSession(data).then(() => {
-        done()
-      })
-    })
-  })
-*/
-  it('Can get a list of available sessions from the database.', function(done) {
-    this.timeout(6000)
-    getSessions().subscribe((nextSessions) => {
-      nextSessions.map(function(session) {
-        if (session.name === 'test2') {
-          assert(true)
-          done()
-        }
-      })
-    })
-
-    createSession('test2')
-  })
-
-  it('Allows you to add commands', function() {
-    const testCommands = [
-      {
-        action: function(msg, user) {
-          return 'zomg it works!'
-        },
-        instruction: 'Say "test1" to test.',
-        name: 'test1',
-      },
-      {
-        action: function(msg, user) {
-          return 'zomg it works again!'
-        },
-        instruction: 'Say "test2" to test again.',
-        name: 'test2',
-      },
-    ]
-    addCommands(testCommands)
-    assert.equal(findCommand('test1')(), 'zomg it works!')
-    assert.equal(findCommand('test2')(), 'zomg it works again!')
-  })
-
-  it('Can create new users', function() {
-    createUser('test-user').then(function(user) {
-      assert(user.name === 'test-user')
-    })
-  })
-
-  after(function() {
-    sequelize.close()
+after('Destroy discord client', function(done) {
+  // messageHandlerSpy.restore()
+  client.destroy().then(() => {
+    console.log('Connection closed.')
+    // messageHandlerSpy.restore()
+    done()
   })
 })

@@ -4,7 +4,7 @@ import * as bodyParser from 'body-parser'
 import * as Discord from 'discord.js'
 import * as express from 'express'
 import * as path from 'path'
-import bot from './bot'
+import { messageHandler } from './bot'
 import './bot/command'
 import './postgres'
 
@@ -32,15 +32,10 @@ app.post('/message', function(req, res) {
 })
 
 app.get('/', (req, res) => {
-  console.log(`Why doesn't this show up in the logs?`)
   client.generateInvite(['SEND_MESSAGES', 'MENTION_EVERYONE']).then(link => {
     console.log(`Bot invite link: ${link}`)
   })
   res.status(200).sendFile(path.join(__dirname, 'frontend/index.html'))
-})
-app.get('/test', (req, res) => {
-  console.log('test')
-  res.status(200).send('Hello')
 })
 app.get('/invite', (req, res) => {
   client.generateInvite(['SEND_MESSAGES', 'MENTION_EVERYONE']).then(link => {
@@ -55,6 +50,5 @@ client.on('ready', () => {
   console.log(`logged in as ${client.user.tag}`)
 })
 
-bot(client)
-
+client.on('message', messageHandler)
 client.login(process.env.TOKEN)
