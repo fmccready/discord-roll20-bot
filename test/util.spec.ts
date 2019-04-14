@@ -11,6 +11,7 @@ describe('writeJSON', function() {
     const channels = client.channels.values()
 
     const channelStream = fs.createWriteStream(channelsFilePath)
+
     channelStream.on('close', () => {
       const data = fs.readFileSync(channelsFilePath)
       try {

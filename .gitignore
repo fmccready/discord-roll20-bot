@@ -7,3 +7,4 @@ notes.md
 nohup.out
 dist
 test/data
+*.code-workspace
