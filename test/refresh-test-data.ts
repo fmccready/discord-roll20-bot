@@ -1,63 +1,87 @@
 import chalk from 'chalk'
-import {Client} from 'discord.js'
+import { Client } from 'discord.js'
 import * as dotenv from 'dotenv'
-import {createWriteStream, mkdir} from 'fs'
+import { createWriteStream, mkdir } from 'fs'
+import { WriteStream } from 'fs'
 import * as path from 'path'
-import {inspect} from 'util'
+import { inspect } from 'util'
 
 dotenv.config()
 
-const dataDir = path.join(__dirname, 'data')
+interface TestDataWriter {
+  data: () => object | Iterable<any>
+  file: string
+  writer: (writeStream: WriteStream, data: any) => void
+}
 
-const clientFile = path.join(dataDir, 'client.json')
 const client = new Client()
-const channelsFile = path.join(dataDir, 'channels.json')
-const channels = client.channels.values()
-const guildsFile = path.join(dataDir, 'guilds.json')
-const guilds = client.guilds.values()
-const messagesFile = path.join(dataDir, 'messages.json')
 
-function writeIterableToFile(file: string, iterable: IterableIterator<any>) {
-  mkdir(dataDir, () => {
-    const fileStream = createWriteStream(file, {flags: 'w'})
-    fileStream.write('{')
+const testDataFiles: TestDataWriter[] = [
+  {
+    data: () => client.channels.values(),
+    file: 'channels.json',
+    writer: writeIterableToWriteStream,
+  },
+  {
+    data: () => client.guilds.values(),
+    file: 'guilds.json',
+    writer: writeIterableToWriteStream,
+  },
+  {
+    data: () => client,
+    file: 'client.txt',
+    writer: writeObjectToWriteStream,
+  },
+  {
+    data: () => client
+      .guilds.find((guild) => guild.name === 'roll20bottest')
+      .channels.find((channel) => channel.name === 'general'),
+    file: 'test.txt',
+    writer: writeObjectToWriteStream,
+  }
+]
 
-    let i = iterable.next()
-    while (!i.done) {
-      fileStream.write(`\n"${i.value.id}": ${JSON.stringify(i.value, null, 2)}`)
-      i = iterable.next()
-      if (!i.done) fileStream.write(',')
-    }
+function writeIterableToWriteStream(
+  writeStream: WriteStream,
+  iterable: IterableIterator<any>,
+) {
+  writeStream.write('{')
 
-    fileStream.write('}')
-    fileStream.end()
-  })
+  let data = iterable.next()
+  while (!data.done) {
+    writeStream.write(
+      `\n"${data.value.id}": ${JSON.stringify(data.value, null, 2)}`,
+    )
+    data = iterable.next()
+    if (!data.done) writeStream.write(',')
+  }
+
+  writeStream.write('}')
 }
 
-function writeObjectToFile(file: string, object: object) {
-  mkdir(dataDir, () => {
-    const fileStream = createWriteStream(file, {flags: 'w'})
-    fileStream.write(inspect(object, {showHidden: true}))
-    fileStream.end()
-  })
+function writeObjectToWriteStream(writeStream: WriteStream, obj: object) {
+  writeStream.write(inspect(obj, { showHidden: true }))
 }
 
-client.login(process.env.TOKEN).then(() => {
-  console.log(client.guilds.size)
-  client.guilds.find((value, key, collection) => {
-    console.log(value, key, collection)
-    return value.name === 'roll20bottest'
-  })
-  writeIterableToFile(channelsFile, channels)
-  writeIterableToFile(guildsFile, guilds)
-  writeObjectToFile(clientFile, client)
+const dataDir = path.join(__dirname, 'data')
+client
+  .login(process.env.TOKEN)
+  .then(() => {
+    mkdir(dataDir, () => {
+      testDataFiles.forEach(test => {
+        const writeStream = createWriteStream(path.join(dataDir, test.file), { flags: 'w' })
+        test.writer(writeStream, test.data())
+        writeStream.end()
+      })
 
-  client.destroy().then(() => {
-    console.log(chalk.greenBright('Your test data feels refreshed.'))
+      client.destroy().then(() => {
+        console.log(chalk.greenBright('Your test data feels refreshed.'))
+      })
+    })
   })
-}).catch((err) => {
-  console.log(
-    chalk.redBright(err),
-    chalk.red('\nSomething went wrong. Test data is not refreshed.'),
-  )
-})
+  .catch(err => {
+    console.log(
+      chalk.redBright(err),
+      chalk.red('\nSomething went wrong. Test data is not refreshed.'),
+    )
+  })
