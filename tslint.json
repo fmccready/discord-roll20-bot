@@ -5,9 +5,20 @@
     ],
     "jsRules": {},
     "rules": {
-        "indent":[true, "spaces", 2],
-        "quotemark": [true, "single"],
-        "semicolon": [true, "never"],
+        "trailing-comma": true,
+        "indent": [
+            true,
+            "spaces",
+            2
+        ],
+        "quotemark": [
+            true,
+            "single"
+        ],
+        "semicolon": [
+            true,
+            "never"
+        ],
         "object-literal-shorthand": false,
         "only-arrow-functions": false,
         "interface-name": false,
