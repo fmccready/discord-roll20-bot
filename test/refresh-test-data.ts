@@ -10,7 +10,7 @@ import { inspect } from 'util'
 dotenv.config()
 
 interface Test {
-  data: () => Observable<object | IterableIterator<Guild | Channel> | Client>
+  data: () => Observable<object>
   file: string
 }
 
