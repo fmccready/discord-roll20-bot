@@ -1,14 +1,4 @@
-import { Op } from 'sequelize'
-import * as Sequelize from 'sequelize'
-import { UserModel } from '../postgres'
-
-export interface UserAttributes {
-  id?: string
-  name: string
-}
-export interface UserInstance extends Sequelize.Instance<UserAttributes>, UserAttributes {
-
-}
+import { UserAttributes, UserModel } from '../postgres'
 
 export function createUser(name: string) {
   return UserModel.create({
@@ -19,25 +9,19 @@ export function createUser(name: string) {
 export function findUserById(userId: string) {
   return UserModel.findOne({
     where: {
-      id: {
-        [Op.eq]: userId,
-      },
+      id: userId,
     },
-  }).then((user: UserInstance) => {
-    console.log(user)
   })
 }
 
 export function findUsersByGroupId(groupId: string) {
   return UserModel.findAll({
     where: {
-      id: {
-        [Op.eq]: groupId,
-      },
+      id: groupId,
     },
-  }).then((users: UserInstance[]) => {
+  }).then((users: UserAttributes[]) => {
     users.forEach(user => {
-      console.log(user)
+      console.log(user.name)
     })
   })
 }

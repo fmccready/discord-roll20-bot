@@ -1,50 +1,15 @@
-import * as Sequelize from 'sequelize'
-import { GroupAttributes, GroupInstance } from './models/group'
-import { SessionAttributes, SessionInstance } from './models/session'
-import { UserAttributes, UserInstance } from './models/user'
-const Op = Sequelize.Op
-/* tslint:disable:object-literal-sort-keys */
-const operatorsAliases = {
-  $eq: Op.eq,
-  $ne: Op.ne,
-  $gte: Op.gte,
-  $gt: Op.gt,
-  $lte: Op.lte,
-  $lt: Op.lt,
-  $not: Op.not,
-  $in: Op.in,
-  $notIn: Op.notIn,
-  $is: Op.is,
-  $like: Op.like,
-  $notLike: Op.notLike,
-  $iLike: Op.iLike,
-  $notILike: Op.notILike,
-  $regexp: Op.regexp,
-  $notRegexp: Op.notRegexp,
-  $iRegexp: Op.iRegexp,
-  $notIRegexp: Op.notIRegexp,
-  $between: Op.between,
-  $notBetween: Op.notBetween,
-  $overlap: Op.overlap,
-  $contains: Op.contains,
-  $contained: Op.contained,
-  $adjacent: Op.adjacent,
-  $strictLeft: Op.strictLeft,
-  $strictRight: Op.strictRight,
-  $noExtendRight: Op.noExtendRight,
-  $noExtendLeft: Op.noExtendLeft,
-  $and: Op.and,
-  $or: Op.or,
-  $any: Op.any,
-  $all: Op.all,
-  $values: Op.values,
-  $col: Op.col,
-}
+import { DataTypes, Model, Sequelize } from 'sequelize'
+import { BuildOptions } from 'sequelize'
+
+import * as dotenv from 'dotenv'
+
+dotenv.config()
+
 /* tslint:enable:object-literal-sort-keys */
+console.log(process.env.DATABASE_URL)
 export const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
   logging: false,
-  operatorsAliases: operatorsAliases,
 })
 
 sequelize
@@ -52,45 +17,74 @@ sequelize
   .then(() => {
     // console.log('Connection has been established successfully.')
   })
-  .catch((err) => {
+  .catch(err => {
     console.error('Unable to connect to the database:', err)
   })
 
-export const UserModel = sequelize.define<UserInstance, UserAttributes>('user', {
-  id: {
-    allowNull: false,
-    defaultValue: Sequelize.UUIDV1,
-    primaryKey: true,
-    type: Sequelize.UUID,
-  },
-  name: {
-    type: Sequelize.STRING,
-  },
-})
+type UserModelStatic = typeof Model & {
+  new (values?: object, options?: BuildOptions): UserAttributes
+}
 
-export const GroupModel = sequelize.define<GroupInstance, GroupAttributes>('group', {
-  id: {
-    allowNull: false,
-    defaultValue: Sequelize.UUIDV1,
-    primaryKey: true,
-    type: Sequelize.UUID,
-  },
-  name: {
-    type: Sequelize.STRING,
-  },
-})
+export interface UserAttributes extends Model {
+  id?: string
+  name: string
+}
 
-export const SessionModel = sequelize.define<SessionInstance, SessionAttributes>('session', {
+export const UserModel = sequelize.define('user', {
   id: {
     allowNull: false,
-    defaultValue: Sequelize.UUIDV1,
+    defaultValue: DataTypes.UUIDV1,
     primaryKey: true,
-    type: Sequelize.UUID,
+    type: DataTypes.UUID,
   },
   name: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
   },
-})
+}) as UserModelStatic
+
+type GroupModelStatic = typeof Model & {
+  new (values?: object, options?: BuildOptions): GroupAttributes
+}
+
+export interface GroupAttributes extends Model {
+  readonly id: string
+  name: string
+}
+
+export const GroupModel = sequelize.define('group', {
+  id: {
+    allowNull: false,
+    defaultValue: DataTypes.UUIDV1,
+    primaryKey: true,
+    type: DataTypes.UUID,
+  },
+  name: {
+    type: DataTypes.STRING,
+  },
+}) as GroupModelStatic
+
+export type SessionModelStatic = typeof Model & {
+  new (values?: object, options?: BuildOptions): SessionAttributes
+}
+
+export interface SessionAttributes extends Model {
+  readonly id: number
+  name: string
+  createdAt: Date
+  updatedAt: Date
+}
+
+export const SessionModel = sequelize.define('session', {
+  id: {
+    allowNull: false,
+    defaultValue: DataTypes.UUIDV1,
+    primaryKey: true,
+    type: DataTypes.UUID,
+  },
+  name: {
+    type: DataTypes.STRING,
+  },
+}) as SessionModelStatic
 
 UserModel.sync()
 GroupModel.sync()

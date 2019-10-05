@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv'
 import * as path from 'path'
 import { Subscription } from 'rxjs'
-dotenv.config({ path: path.join(__dirname, '../.env') })
+const result = dotenv.config()
 
 import { assert } from 'chai'
 import { findCommand } from '../src/bot'
@@ -9,7 +9,7 @@ import { addCommands, Command, getCommands } from '../src/bot/command'
 import {
   createSession,
   getSessions,
-//  removeSession,
+  //  removeSession,
 } from '../src/models/session'
 import {
   createUser,
@@ -22,7 +22,7 @@ let commands: Command[]
 let commandSubscription: Subscription
 describe('Discord bot', function() {
   before(function() {
-    commandSubscription = getCommands().subscribe((next) => (commands = next))
+    commandSubscription = getCommands().subscribe(next => (commands = next))
   })
 
   it('Has a list of commands', function() {
@@ -34,7 +34,7 @@ describe('Discord bot', function() {
     const ping = findCommand('ping')
     assert.equal(ping(), 'pong')
   })
-/*
+  /*
   it('Can add and remove a session from the database.', function(done) {
     createSession('Test').then((data) => {
       assert(data.getDataValue('name') === 'Test')
@@ -46,7 +46,7 @@ describe('Discord bot', function() {
 */
   it('Can get a list of available sessions from the database.', function(done) {
     this.timeout(6000)
-    getSessions().subscribe((nextSessions) => {
+    getSessions().subscribe(nextSessions => {
       nextSessions.map(function(session) {
         if (session.name === 'test2') {
           assert(true)

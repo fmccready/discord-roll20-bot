@@ -1,14 +1,4 @@
-import { Instance, Op } from 'sequelize'
-import * as Sequelize from 'sequelize'
-import { GroupModel } from '../postgres'
-
-export interface GroupAttributes {
-  id?: string
-  name: string
-}
-export interface GroupInstance extends Sequelize.Instance<GroupAttributes>, GroupAttributes {
-
-}
+import { GroupAttributes, GroupModel } from '../postgres'
 
 function createGroup(name: string) {
   return GroupModel.create({
@@ -17,13 +7,11 @@ function createGroup(name: string) {
 }
 
 function findGroupById(groupId: string) {
-  return GroupModel.find({
+  return GroupModel.findOne({
     where: {
-      id: {
-        [Op.eq]: groupId,
-      },
+      id: groupId,
     },
-  }).then((group: GroupInstance) => {
-    console.log(group)
+  }).tap((group: GroupAttributes) => {
+    console.log(group.name)
   })
 }
