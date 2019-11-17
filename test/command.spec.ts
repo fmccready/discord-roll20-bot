@@ -1,16 +1,10 @@
 import * as dotenv from 'dotenv'
-import * as path from 'path'
+dotenv.config()
 import { Subscription } from 'rxjs'
-const result = dotenv.config()
 
 import { assert } from 'chai'
 import { findCommand } from '../src/bot'
 import { addCommands, Command, getCommands } from '../src/bot/command'
-import {
-  createSession,
-  getSessions,
-  //  removeSession,
-} from '../src/models/session'
 import {
   createUser,
   findUserById,
@@ -33,29 +27,6 @@ describe('Discord bot', function() {
   it('Finds a command in an array', function() {
     const ping = findCommand('ping')
     assert.equal(ping(), 'pong')
-  })
-  /*
-  it('Can add and remove a session from the database.', function(done) {
-    createSession('Test').then((data) => {
-      assert(data.getDataValue('name') === 'Test')
-      removeSession(data).then(() => {
-        done()
-      })
-    })
-  })
-*/
-  it('Can get a list of available sessions from the database.', function(done) {
-    this.timeout(6000)
-    getSessions().subscribe(nextSessions => {
-      nextSessions.map(function(session) {
-        if (session.name === 'test2') {
-          assert(true)
-          done()
-        }
-      })
-    })
-
-    createSession('test2')
   })
 
   it('Allows you to add commands', function() {
@@ -87,7 +58,6 @@ describe('Discord bot', function() {
   })
 
   after(function() {
-    sequelize.close()
     commandSubscription.unsubscribe()
   })
 })

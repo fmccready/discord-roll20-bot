@@ -5,7 +5,6 @@ import * as dotenv from 'dotenv'
 
 dotenv.config()
 
-/* tslint:enable:object-literal-sort-keys */
 console.log(process.env.DATABASE_URL)
 export const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
@@ -15,7 +14,7 @@ export const sequelize = new Sequelize(process.env.DATABASE_URL, {
 sequelize
   .authenticate()
   .then(() => {
-    // console.log('Connection has been established successfully.')
+    console.log('Connection has been established successfully.')
   })
   .catch(err => {
     console.error('Unable to connect to the database:', err)

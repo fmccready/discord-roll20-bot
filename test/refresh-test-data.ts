@@ -1,10 +1,20 @@
 import chalk from 'chalk'
-import { Channel, Client, Guild, TextChannel } from 'discord.js'
+import { Client, TextChannel } from 'discord.js'
 import * as dotenv from 'dotenv'
 import { createWriteStream, mkdir } from 'fs'
 import { WriteStream } from 'fs'
+import { stringify } from 'json-cycle'
 import * as path from 'path'
-import { forkJoin, from, Observable, of } from 'rxjs'
+import {
+  bindNodeCallback,
+  forkJoin,
+  from,
+  Observable,
+  of,
+  throwError,
+} from 'rxjs'
+import { flatMap } from 'rxjs/operators'
+
 import { inspect } from 'util'
 
 dotenv.config()
@@ -13,21 +23,22 @@ interface Test {
   data: () => Observable<object>
   file: string
 }
+type ObservableWrite = (arg: string, encoding: string) => Observable<boolean[]>
 
 const client = new Client()
 
 const testDataFiles: Test[] = [
   {
     data: () => from(client.channels.values()),
-    file: 'channels.md',
+    file: 'channels.json',
   },
   {
     data: () => from(client.guilds.values()),
-    file: 'guilds.md',
+    file: 'guilds.json',
   },
   {
     data: () => of(client),
-    file: 'client.md',
+    file: 'client.json',
   },
   {
     data: () => {
@@ -42,21 +53,53 @@ const testDataFiles: Test[] = [
         })
       )
     },
-    file: 'messages.md',
+    file: 'messages.json',
   },
 ]
 
-function writeObjectToWriteStream(writeStream: WriteStream, obj: object) {
-  writeStream.write(
-    '```javascript\n' + inspect(obj, { showHidden: true }) + '\n```\n'
+function writeObjectToWriteStreamForMarkdown(
+  writeStream: WriteStream,
+  obj: object
+) {
+  const observableWrite: ObservableWrite = bindNodeCallback(
+    (batch: string, encoding: string, callback) =>
+      writeStream.write(batch, encoding, callback)
   )
+  return observableWrite.call(
+    '```javascript\n' + inspect(obj, { showHidden: true }) + '\n```\n',
+    'utf8'
+  )
+}
+
+function writeObjectToWriteStreamForJSON(
+  writeStream: WriteStream,
+  obj: object
+) {
+  const observableWrite: ObservableWrite = bindNodeCallback(
+    (batch: string, encoding: string, callback) =>
+      writeStream.write(batch, encoding, callback)
+  )
+  console.log(chalk.yellow('writing to stream ', obj.toString()))
+  return observableWrite.call(`${stringify(obj)},`, 'utf8')
 }
 
 function writeTestToWriteStream(writeStream: WriteStream, test: Test) {
   console.log(chalk.greenBright(`Writing ${test.file}`))
-  return test.data().subscribe(value => {
-    writeObjectToWriteStream(writeStream, value as object)
-  })
+
+  return test.data().pipe(
+    flatMap(value => {
+      if (test.file.match(/.md$/))
+        return writeObjectToWriteStreamForMarkdown(writeStream, value)
+      else if (test.file.match(/.json$/))
+        return writeObjectToWriteStreamForJSON(writeStream, value)
+      else
+        return throwError(
+          `File extension for ${
+            test.file
+          } does not have a method to write to that type of file.`
+        )
+    })
+  )
 }
 
 const dataDir = path.join(__dirname, 'data')
@@ -68,7 +111,7 @@ client
         const writeStream = createWriteStream(path.join(dataDir, test.file), {
           flags: 'w',
         })
-        return of(writeTestToWriteStream(writeStream, test))
+        return writeTestToWriteStream(writeStream, test)
       })
 
       forkJoin(tests).subscribe({
@@ -88,6 +131,7 @@ client
   })
 
 function logError(err) {
+  console.error(err)
   console.log(
     chalk.redBright(err),
     chalk.red('\nSomething went wrong. Test data is not refreshed.')

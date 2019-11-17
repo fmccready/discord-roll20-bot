@@ -3,7 +3,6 @@ import { SessionAttributes, SessionModel } from '../postgres'
 import { remove } from '../utilities/remove'
 
 const sessionSubject = new BehaviorSubject<SessionAttributes[]>([])
-
 export function createSession(name: string) {
   return SessionModel.create({
     name: name,
@@ -16,6 +15,7 @@ export function createSession(name: string) {
 }
 
 export function getSessions() {
+  SessionModel.findAll().then(sessions => sessionSubject.next(sessions))
   return sessionSubject
 }
 /*
