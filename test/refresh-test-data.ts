@@ -66,8 +66,8 @@ function writeObjectToWriteStreamForMarkdown(
       writeStream.write(batch, encoding, callback)
   )
   return observableWrite.call(
-    '```javascript\n' + inspect(obj, { showHidden: true }) + '\n```\n',
-    'utf8'
+    writeStream,
+    '```javascript\n' + inspect(obj, { showHidden: true }) + '\n```\n'
   )
 }
 
@@ -79,12 +79,12 @@ function writeObjectToWriteStreamForJSON(
     (batch: string, encoding: string, callback) =>
       writeStream.write(batch, encoding, callback)
   )
-  console.log(chalk.yellow('writing to stream ', obj.toString()))
-  return observableWrite.call(`${stringify(obj)},`, 'utf8')
+  console.log(chalk.grey('Writing to stream ', obj.toString()))
+  return observableWrite.call(writeStream, `${stringify(obj)},`)
 }
 
 function writeTestToWriteStream(writeStream: WriteStream, test: Test) {
-  console.log(chalk.greenBright(`Writing ${test.file}`))
+  console.log(chalk.dim(`Writing ${test.file}`))
 
   return test.data().pipe(
     flatMap(value => {
