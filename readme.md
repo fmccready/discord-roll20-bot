@@ -32,6 +32,10 @@ Change default admin password
 
 `\password postgres`
 
+#### Login to database
+
+`sudo -u postgres psql`
+
 #### Create the database
 
 Create database and user for app
@@ -57,6 +61,13 @@ Quit postgres
 Switch back to your user
 
 `su - yourusername`
+
+##### Helpful postgres commands
+
+`\l` list databases
+`\c database_name` connect to database
+`\dt` list tables
+`\q` quit psql
 
 ### Setup environment variables
 

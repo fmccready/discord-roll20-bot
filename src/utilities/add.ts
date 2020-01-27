@@ -1,4 +1,4 @@
-export function add(arr: any[], item: any) {
+export function add<T>(arr: T[], item: T) {
   if (arr.indexOf(item) > -1) {
     return
   }

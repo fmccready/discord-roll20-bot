@@ -3,12 +3,19 @@
         "outDir": "./dist",
         "allowJs": true,
         "target": "es5",
-        "lib": ["es5", "es6", "dom"],
+        "lib": [
+            "es5",
+            "es6",
+            "dom"
+        ],
         "sourceMap": true,
         "baseUrl": "./src/",
         "paths": {
-            "Bot": ["bot/index"]
-        }
+            "Bot": [
+                "bot/index"
+            ]
+        },
+        "resolveJsonModule": true
     },
     "include": [
         "./src/**/*"

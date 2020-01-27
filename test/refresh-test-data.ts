@@ -57,30 +57,15 @@ const testDataFiles: Test[] = [
   },
 ]
 
-function writeObjectToWriteStreamForMarkdown(
+function observableWrite(
   writeStream: WriteStream,
   obj: object
-) {
-  const observableWrite: ObservableWrite = bindNodeCallback(
-    (batch: string, encoding: string, callback) =>
-      writeStream.write(batch, encoding, callback)
-  )
-  return observableWrite.call(
-    writeStream,
-    '```javascript\n' + inspect(obj, { showHidden: true }) + '\n```\n'
-  )
-}
-
-function writeObjectToWriteStreamForJSON(
-  writeStream: WriteStream,
-  obj: object
-) {
-  const observableWrite: ObservableWrite = bindNodeCallback(
-    (batch: string, encoding: string, callback) =>
-      writeStream.write(batch, encoding, callback)
-  )
+): ObservableWrite {
   console.log(chalk.grey('Writing to stream ', obj.toString()))
-  return observableWrite.call(writeStream, `${stringify(obj)},`)
+
+  return bindNodeCallback((batch: string, encoding: string, callback) =>
+    writeStream.write(batch, encoding, callback)
+  )
 }
 
 function writeTestToWriteStream(writeStream: WriteStream, test: Test) {
@@ -89,9 +74,15 @@ function writeTestToWriteStream(writeStream: WriteStream, test: Test) {
   return test.data().pipe(
     flatMap(value => {
       if (test.file.match(/.md$/))
-        return writeObjectToWriteStreamForMarkdown(writeStream, value)
+        return observableWrite(writeStream, value).call(
+          writeStream,
+          '```javascript\n' + inspect(value, { showHidden: true }) + '\n```\n'
+        )
       else if (test.file.match(/.json$/))
-        return writeObjectToWriteStreamForJSON(writeStream, value)
+        return observableWrite(writeStream, value).call(
+          writeStream,
+          `${stringify(value)},`
+        )
       else
         return throwError(
           `File extension for ${
@@ -122,6 +113,9 @@ client
         },
         error: err => {
           logError(err)
+          client.destroy().then(() => {
+            console.log(chalk.red('Client destroyed after error.'))
+          })
         },
       })
     })
@@ -131,7 +125,6 @@ client
   })
 
 function logError(err) {
-  console.error(err)
   console.log(
     chalk.redBright(err),
     chalk.red('\nSomething went wrong. Test data is not refreshed.')

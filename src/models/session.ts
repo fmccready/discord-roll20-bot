@@ -1,6 +1,6 @@
-import { BehaviorSubject } from 'rxjs'
+import { BehaviorSubject, from } from 'rxjs'
 import { SessionAttributes, SessionModel } from '../postgres'
-import { remove } from '../utilities/remove'
+import { removeById } from '../utilities/remove'
 
 const sessionSubject = new BehaviorSubject<SessionAttributes[]>([])
 export function createSession(name: string) {
@@ -16,13 +16,12 @@ export function createSession(name: string) {
 
 export function getSessions() {
   SessionModel.findAll().then(sessions => sessionSubject.next(sessions))
-  return sessionSubject
+  return from(sessionSubject)
 }
-/*
-export function removeSession(sessionInstance: SessionInstance) {
+
+export function removeSession(sessionInstance: SessionAttributes) {
   return sessionInstance.destroy().then(() => {
-      sessionSubject.next(remove(sessionSubject.getValue(), sessionInstance))
-      return getSessions()
+    sessionSubject.next(removeById(sessionSubject.getValue(), sessionInstance))
+    return from(sessionSubject)
   })
 }
-*/

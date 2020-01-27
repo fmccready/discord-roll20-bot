@@ -67,7 +67,7 @@ export type SessionModelStatic = typeof Model & {
 }
 
 export interface SessionAttributes extends Model {
-  readonly id: number
+  readonly id: string
   name: string
   createdAt: Date
   updatedAt: Date

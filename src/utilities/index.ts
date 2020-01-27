@@ -1,3 +1,3 @@
 export { add } from './add'
-export { remove } from './remove'
+export { removeById as remove } from './remove'
 export { catchAsyncErrors } from './catchAsyncErrors'

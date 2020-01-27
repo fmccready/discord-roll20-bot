@@ -3,18 +3,14 @@ dotenv.config()
 import { Subscription } from 'rxjs'
 
 import { assert } from 'chai'
-import { findCommand } from '../src/bot'
-import { addCommands, Command, getCommands } from '../src/bot/command'
-import {
-  createUser,
-  findUserById,
-  findUsersByGroupId,
-} from '../src/models/user'
-import { sequelize } from '../src/postgres'
+import { createUser, findUserById, findUsersByGroupId } from '../models/user'
+import { sequelize } from '../postgres'
+import { addCommands, Command, getCommands } from './command'
+import { findCommand } from './index'
 
 let commands: Command[]
 let commandSubscription: Subscription
-describe('Discord bot', function() {
+describe('Commands', function() {
   before(function() {
     commandSubscription = getCommands().subscribe(next => (commands = next))
   })
@@ -49,12 +45,6 @@ describe('Discord bot', function() {
     addCommands(testCommands)
     assert.equal(findCommand('test1')(), 'zomg it works!')
     assert.equal(findCommand('test2')(), 'zomg it works again!')
-  })
-
-  it('Can create new users', function() {
-    createUser('test-user').then(function(user) {
-      assert(user.name === 'test-user')
-    })
   })
 
   after(function() {

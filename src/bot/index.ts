@@ -1,6 +1,7 @@
 import { Client, Message } from 'discord.js'
 import { defaultTo, find, propEq, tap } from 'ramda'
 import { Command, getCommands } from './command'
+import writeTestData from '../utilities/writeTestData'
 
 let commandList: Command[] = []
 
