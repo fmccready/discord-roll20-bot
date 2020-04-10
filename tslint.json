@@ -4,6 +4,12 @@
         "tslint:recommended"
     ],
     "jsRules": {},
+    "jsxRules": {
+        "quotemark": [
+            true,
+            "double"
+        ]
+    },
     "rules": {
         "trailing-comma": true,
         "indent": [
@@ -13,7 +19,8 @@
         ],
         "quotemark": [
             true,
-            "single"
+            "single",
+            "jsx-double"
         ],
         "semicolon": [
             true,

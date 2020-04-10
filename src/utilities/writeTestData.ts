@@ -24,7 +24,11 @@ export function readTestData(testFilename: string) {
 
 export function writeTestData(testFilename: string, testData: object) {
   const makeTestDataDirectory = onErrorResumeNext(
-    from(mkdir(resolve(process.cwd(), 'test/data')))
+    from(
+      mkdir(resolve(process.cwd(), 'test/data')).catch(err => {
+        if (err.code !== 'EEXIST') console.error(err)
+      })
+    )
   )
   const writeTestFile = from(
     writefile(

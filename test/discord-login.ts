@@ -4,26 +4,23 @@ const client = new Client()
 
 let loggedIn
 
-const login = function() {
+export const login = function() {
   if (!loggedIn) {
     loggedIn = true
-    before('Setup discord client', function(done) {
-      this.timeout(10000)
+    beforeAll(function(done) {
       client.login(process.env.TOKEN).then(() => {
         console.log(`logged in as ${client.user.tag}`)
         done()
       })
-    })
+    }, 10000)
   }
 
   return client
 }
 
-const logout = function() {
+export const logout = function() {
   if (!client) return
-  after('Destroy discord client', function(done) {
+  afterAll(function(done) {
     client.destroy().then(done)
   })
 }
-
-export { login, logout }

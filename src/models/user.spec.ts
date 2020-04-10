@@ -1,19 +1,24 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
-import { Subscription } from 'rxjs'
 
-import { assert, expect } from 'chai'
-import {
-  createUser,
-  findUserById,
-  findUsersByGroupId,
-  User,
-  findUserByName,
-} from './user'
+import { assert } from 'chai'
+import { Sequelize } from 'sequelize/types'
+import { connectDatabase, disconnectDatabase } from '../postgres'
+import { createUser, findUserByName } from './user'
+
+let sequelize: Sequelize
+
+beforeAll(async () => {
+  sequelize = await connectDatabase()
+})
+
+afterAll(async () => {
+  await disconnectDatabase(sequelize)
+})
 
 describe.skip('Users', function() {
   const USERNAME = 'test-user'
-  it('Can create and remove users', function() {
+  test('Can create and remove users', function() {
     createUser(USERNAME).then(function(user) {
       assert(user.name === USERNAME)
     })

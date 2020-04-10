@@ -1,7 +1,7 @@
 import { Client, Message } from 'discord.js'
 import { defaultTo, find, propEq, tap } from 'ramda'
+import { writeTestData } from '../utilities/writeTestData'
 import { Command, getCommands } from './command'
-import writeTestData from '../utilities/writeTestData'
 
 let commandList: Command[] = []
 
@@ -10,13 +10,8 @@ getCommands().subscribe(commands => {
 })
 
 function defaultReply() {
-  let reply = `Next game is at .\n`
-  reply += commandList
-    .map(command => {
-      return command.instruction
-    })
-    .join('\n')
-  return reply
+  return `List of commands
+  ${commandList.map(command => command.instruction).join('\n')}`
 }
 
 export function findCommand(command: string): (msg?: any) => string {
@@ -30,8 +25,9 @@ export function messageHandler(msg: Message) {
     const msgContent = msg.content
     const command = findCommand(msgContent)
     if (command) {
-      console.log(command(msgContent))
       msg.reply(command(msgContent))
+    } else {
+      msg.reply(defaultReply())
     }
   }
 }

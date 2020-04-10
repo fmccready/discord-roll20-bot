@@ -1,15 +1,16 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
-module.exports = ['source-map'].map(devtool => ({
+
+module.exports = {
   entry: {
-    index: './src/frontend/index.ts',
+    index: './src/frontend/index.tsx',
   },
   resolve: {
     alias: {
       Utilities: path.resolve(__dirname, 'src/utilities/'),
     },
-    extensions: ['.ts', '.tsx', '.js'],
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
   },
   module: {
     rules: [
@@ -21,22 +22,24 @@ module.exports = ['source-map'].map(devtool => ({
         ],
       },
       {
-        test: /\.less$/,
-        use: [
-          { loader: 'style-loader' },
-          { loader: 'css-loader' },
-          { loader: 'less-loader' },
-        ],
-      },
-      {
         test: /\.tsx?$/,
         loader: 'ts-loader',
       },
       {
-        test: /\.(handlebars|hbs)$/,
-        loader: 'handlebars-loader',
+        enforce: 'pre',
+        test: /\.js$/,
+        loader: 'source-map-loader',
+      },
+      {
+        test: /\.html$/i,
+        loader: 'html-loader',
       },
     ],
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
   },
   output: {
     filename: '[name].bundle.js',
@@ -44,15 +47,15 @@ module.exports = ['source-map'].map(devtool => ({
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'discord-roll20-bot',
-      template: 'src/frontend/index.hbs',
+      filename: 'index.html',
+      template: 'src/frontend/index.html',
     }),
     new webpack.WatchIgnorePlugin([/\.js$/, /\.d\.ts$/]),
   ],
-  devtool,
+  devtool: 'source-map',
   mode: 'production',
   watch: false,
   watchOptions: {
     aggregateTimeout: 2000,
   },
-}))
+}

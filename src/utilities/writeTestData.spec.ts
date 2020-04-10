@@ -12,7 +12,7 @@ describe('writeTestData', function() {
   }
   testData.b = testData
 
-  it('should write test data to a file', done => {
+  test('should write test data to a file', done => {
     writeTestData(testFilename, testData).subscribe(
       next => {
         readFile(
@@ -29,7 +29,7 @@ describe('writeTestData', function() {
       () => done()
     )
   })
-  it('should read test data', done => {
+  test('should read test data', done => {
     readTestData(testFilename).subscribe(
       next => {
         assert.deepStrictEqual(next, testData)
