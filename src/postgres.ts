@@ -1,3 +1,4 @@
+import chalk from 'chalk'
 import { DataTypes, Model, Sequelize } from 'sequelize'
 import { BuildOptions } from 'sequelize'
 
@@ -27,9 +28,18 @@ export async function testConnection(seq: Sequelize) {
     })
 }
 
-export async function disconnectDatabase(seq: Sequelize) {
-  await seq.close()
-}
+// export async function testConnection(seq: Sequelize) {
+//   return await seq
+//     .authenticate()
+//     .then(async () => {
+//       console.log('Connection has been established successfully.')
+//       return true
+//     })
+//     .catch(err => {
+//       console.error('Unable to connect to the database:', err)
+//       return false
+//     })
+// }
 
 type UserModelStatic = typeof Model & {
   new (values?: object, options?: BuildOptions): UserAttributes

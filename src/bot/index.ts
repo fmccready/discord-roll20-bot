@@ -1,5 +1,5 @@
 import { Client, Message } from 'discord.js'
-import { defaultTo, find, propEq, tap } from 'ramda'
+import { defaultTo, filter, find, propEq, tap } from 'ramda'
 import { writeTestData } from '../utilities/writeTestData'
 import { Command, getCommands } from './command'
 
@@ -15,8 +15,10 @@ function defaultReply() {
 }
 
 export function findCommand(command: string): (msg?: any) => string {
-  const nameEqualsCommand = propEq('name', command.toLowerCase())
-  const foundCommandInList = find(nameEqualsCommand, commandList)
+  const foundCommandInList = commandList.find(
+    propEq('name', command.toLowerCase())
+  )
+
   if (foundCommandInList) return foundCommandInList.action
 }
 

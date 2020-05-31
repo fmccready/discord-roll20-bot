@@ -107,15 +107,13 @@ client
 
       forkJoin(tests).subscribe({
         complete: () => {
-          client.destroy().then(() => {
-            console.log(chalk.greenBright('Your test data feels refreshed.'))
-          })
+          client.destroy()
+          console.log(chalk.greenBright('Your test data feels refreshed.'))
         },
         error: err => {
           logError(err)
-          client.destroy().then(() => {
-            console.log(chalk.red('Client destroyed after error.'))
-          })
+          client.destroy()
+          console.log(chalk.red('Client destroyed after error.'))
         },
       })
     })

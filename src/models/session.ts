@@ -3,15 +3,12 @@ import { SessionAttributes, SessionModel } from '../postgres'
 import { removeById } from '../utilities/remove'
 
 const sessionSubject = new BehaviorSubject<SessionAttributes[]>([])
-export function createSession(name: string) {
-  return SessionModel.create({
-    name: name,
-  }).tap((session: SessionAttributes) => {
-    const sessions = sessionSubject.getValue()
-    sessions.push(session)
-    sessionSubject.next(sessions)
-    return session
-  })
+export async function createSession(name: string) {
+  const session = await SessionModel.create({ name })
+  const sessions = sessionSubject.getValue()
+  sessions.push(session)
+  sessionSubject.next(sessions)
+  return session
 }
 
 export function getSessions() {

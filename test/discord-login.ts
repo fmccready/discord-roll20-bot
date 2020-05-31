@@ -20,7 +20,7 @@ export const login = function() {
 
 export const logout = function() {
   if (!client) return
-  afterAll(function(done) {
-    client.destroy().then(done)
+  afterAll(function() {
+    client.destroy()
   })
 }

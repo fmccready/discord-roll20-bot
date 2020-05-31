@@ -3,18 +3,7 @@ dotenv.config()
 
 import { assert } from 'chai'
 import { Sequelize } from 'sequelize/types'
-import { connectDatabase, disconnectDatabase } from '../postgres'
 import { createUser, findUserByName } from './user'
-
-let sequelize: Sequelize
-
-beforeAll(async () => {
-  sequelize = await connectDatabase()
-})
-
-afterAll(async () => {
-  await disconnectDatabase(sequelize)
-})
 
 describe.skip('Users', function() {
   const USERNAME = 'test-user'
