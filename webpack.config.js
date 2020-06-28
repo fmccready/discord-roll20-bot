@@ -1,6 +1,5 @@
 const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const webpack = require('webpack')
+const CopyPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   entry: {
@@ -30,10 +29,6 @@ module.exports = {
         test: /\.js$/,
         loader: 'source-map-loader',
       },
-      {
-        test: /\.html$/i,
-        loader: 'html-loader',
-      },
     ],
   },
   optimization: {
@@ -45,15 +40,18 @@ module.exports = {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist/frontend'),
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: 'src/frontend/index.html',
-    }),
-    new webpack.WatchIgnorePlugin([/\.js$/, /\.d\.ts$/]),
-  ],
   devtool: 'source-map',
-  mode: 'production',
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    compress: true,
+    port: 9000,
+  },
+  plugins: [
+    new CopyPlugin({
+      patterns: [{ from: 'src/frontend/views', to: 'views' }],
+    }),
+  ],
+  mode: process.env.NODE_ENV ?? 'production',
   watch: false,
   watchOptions: {
     aggregateTimeout: 2000,

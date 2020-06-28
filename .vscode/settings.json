@@ -1,5 +1,6 @@
 {
   "editor.formatOnSave": true,
   "prettier.trailingComma": "es5",
+  "puglint.enable": true,
   "files.eol": "\n"
 }

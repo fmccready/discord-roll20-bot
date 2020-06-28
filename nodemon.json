@@ -1,4 +1,10 @@
 {
-  "ignore": "test/*",
-  "delay": 1500
+  "watch": [
+    "src"
+  ],
+  "ext": "ts tsx",
+  "ignore": [
+    "src/**/*.spec.ts"
+  ],
+  "exec": "ts-node ./src/server.tsx"
 }

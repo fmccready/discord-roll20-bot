@@ -1,4 +1,3 @@
-import chalk from 'chalk'
 import { DataTypes, Model, Sequelize } from 'sequelize'
 import { BuildOptions } from 'sequelize'
 
@@ -14,19 +13,6 @@ export function connectDatabase() {
 }
 
 const sequelize = connectDatabase()
-
-export async function testConnection(seq: Sequelize) {
-  return await seq
-    .authenticate()
-    .then(async () => {
-      console.log('Connection has been established successfully.')
-      return true
-    })
-    .catch(err => {
-      console.error('Unable to connect to the database:', err)
-      return false
-    })
-}
 
 // export async function testConnection(seq: Sequelize) {
 //   return await seq
@@ -112,6 +98,5 @@ GroupModel.belongsTo(SessionModel, { as: 'sessions' })
 GroupModel.hasMany(UserModel, { as: 'users' })
 UserModel.belongsTo(GroupModel, { as: 'groups' })
 
-UserModel.sync()
-GroupModel.sync()
-SessionModel.sync()
+sequelize.sync()
+// sequelize.close()
