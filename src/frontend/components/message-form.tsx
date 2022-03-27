@@ -1,31 +1,53 @@
 import * as React from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import Input from './input'
+import { useResponse } from './response-provider'
 
-interface IMessageForm {
-  id?: number
-  message?: string
-  type?: string
-}
+const MessageForm = ({ message = '', type = 'dm' }) => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm()
+  const { setResponses } = useResponse()
 
-export const MessageForm = (
-  { id, message, type }: IMessageForm = {
-    id: 1,
-    message: 'ping',
-    type: 'dm',
+  interface FormValues {
+    message: string
+    type: string
   }
-) => (
-  <form action="/message" method="POST">
-    <label>
-      message:
-      <input type="text" name="message" value={message} />
-    </label>
-    <label>
-      type:
-      <input type="text" name="type" value={type} />
-    </label>
-    <label>
-      id:
-      <input type="text" name="id" value={id} />
-    </label>
-    <button type="submit">Send</button>
-  </form>
-)
+
+  const onSubmit: SubmitHandler<FormValues> = request => {
+    fetch('/message', {
+      body: JSON.stringify(request),
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      method: 'POST',
+      redirect: 'follow',
+    })
+      .then(response => response.json())
+      .then(({ responses }) =>
+        setResponses({ type: 'add', response: responses })
+      )
+      .catch(error => console.log(error))
+  }
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} action="/message" method="POST">
+      <label>
+        message
+        <input {...register('message')} defaultValue={message} type="text" />
+      </label>
+      <label>
+        type
+        <input {...register('type')} defaultValue={type} type="text" />
+      </label>
+      <button type="submit">Send</button>
+    </form>
+  )
+}
+export default MessageForm

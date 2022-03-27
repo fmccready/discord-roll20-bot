@@ -5,8 +5,9 @@
         "incremental": true,
         "jsx": "react",
         "lib": [
-            "es6",
-            "dom"
+            "es2019",
+            "dom",
+            "dom.iterable"
         ],
         "esModuleInterop": true,
         "module": "commonjs",

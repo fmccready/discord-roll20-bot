@@ -22,10 +22,12 @@ export function findCommand(command: string): (msg?: any) => string {
   if (foundCommandInList) return foundCommandInList.action
 }
 
-export function messageHandler(msg: Message) {
-  if (msg.channel.type === 'dm') {
-    const msgContent = msg.content
-    const command = findCommand(msgContent)
-    command ? msg.reply(command(msgContent)) : msg.reply(defaultReply())
+export function messageHandler(message: Message) {
+  if (message.channel.type === 'dm') {
+    const messageContent = message.content
+    const command = findCommand(messageContent)
+    command
+      ? message.reply(command(messageContent))
+      : message.reply(defaultReply())
   }
 }

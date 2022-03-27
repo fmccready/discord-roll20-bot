@@ -1,7 +1,6 @@
 import dotenv from 'dotenv'
 dotenv.config()
 import bodyParser from 'body-parser'
-import chalk from 'chalk'
 import Discord from 'discord.js'
 import express from 'express'
 import { Response } from 'express'
@@ -11,10 +10,9 @@ import pug from 'pug'
 import React, { ReactComponentElement } from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { Readable } from 'stream'
-import { inspect } from 'util'
 import { messageHandler } from './bot/bot'
 import './bot/command'
-import { MessageForm } from './frontend/components/message-form'
+import App from './frontend/App'
 import './postgres'
 
 export const app = express()
@@ -30,11 +28,16 @@ const indexTemplate = pug.compileFile(
   path.join(__dirname, 'frontend/views/index.pug')
 )
 
-const respondWithComponent = (res: Response<any>, Component) => {
+const respondWithComponent = (
+  res: Response<any>,
+  Component: React.FunctionComponent<any>,
+  data: any
+) => {
+  console.log(data)
   const [head, footer] = indexTemplate()
     .split('ServerRenderContent')
     .map(it => Readable.from(it))
-  const body = ReactDOMServer.renderToNodeStream(<Component />)
+  const body = ReactDOMServer.renderToNodeStream(<Component {...data} />)
 
   res.status(200)
 
@@ -59,6 +62,9 @@ app.use(bodyParser.json())
 app.use(express.static('dist/frontend'))
 
 app.post('/message', function(req, res) {
+  console.log('MESSAGE RECEIVED')
+  console.log(req.body.message)
+  console.log(typeof req.body.message)
   const requestBody = req.body
   logInfo('POST: /message', requestBody)
 
@@ -66,20 +72,26 @@ app.post('/message', function(req, res) {
     res.status(400).send('Request cannot be empty')
   }
 
-  messageHandler({
+  const message = {
     channel: { type: requestBody.type },
     content: requestBody.message,
     reply: response => {
-      res.send(response)
+      console.log('RESPONSE!!!!!!!!!!!')
+      console.log(response)
+
+      res.status(200)
+      res.send({ responses: [response] })
     },
-  } as any)
+  } as any
+
+  messageHandler(message)
 })
 
 app.get('/', (req, res) => {
   client.generateInvite(['SEND_MESSAGES', 'MENTION_EVERYONE']).then(link => {
     logInfo(`Bot invite link: ${link}`)
 
-    respondWithComponent(res, MessageForm)
+    respondWithComponent(res, App, { responses: [] })
   })
 })
 

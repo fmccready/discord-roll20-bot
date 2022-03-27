@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import { MessageForm } from './components/message-form'
+import App from './App'
 
-ReactDOM.hydrate(<MessageForm />, document.getElementById('app'))
+ReactDOM.hydrate(<App />, document.getElementById('app'))

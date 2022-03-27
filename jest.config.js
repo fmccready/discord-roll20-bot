@@ -4,7 +4,7 @@
 module.exports = {
   clearMocks: true,
   coverageDirectory: 'coverage',
-  globalSetup: './jest.setup.js',
+  // globalSetup: './jest.setup.ts',
   globalTeardown: './jest.teardown.js',
   testEnvironment: 'node',
   roots: ['<rootDir>/src'],
@@ -15,4 +15,5 @@ module.exports = {
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest',
   },
+  setupFilesAfterEnv: ['./jest.setup.ts']
 }
