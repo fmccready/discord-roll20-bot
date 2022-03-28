@@ -7,8 +7,8 @@
     "clean": "rm -rf dist && mkdir dist",
     "watch-webpack": "NODE_ENV='development' webpack --watch --config webpack.config.js",
     "webpack": "webpack --config webpack.config.js",
-    "start": "tsc && npm run webpack && NODE_OPTIONS=--openssl-legacy-provider node dist/server.js",
-    "dev": "concurrently \"nodemon\" \"NODE_OPTIONS=--openssl-legacy-provider npm run watch-webpack\"",
+    "start": "tsc && npm run webpack && node dist/server.js",
+    "dev": "concurrently \"nodemon\" \"npm run watch-webpack\"",
     "test": "jest",
     "refresh-test-data": "node -r ts-node/register test/refresh-test-data.ts",
     "heroku-postbuild": "webpack -p --config webpack.config.js"
@@ -69,9 +69,9 @@
     "ts-node": "^8.10.2",
     "tslint": "^5.11.0",
     "typescript": "^4.6.2",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.11.0",
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.7.4",
     "whatwg-fetch": "^3.6.2"
   },
   "engines": {
